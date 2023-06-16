@@ -15,7 +15,6 @@ describe('AppController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        AppModule,
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
           useFactory: async (configService: ConfigService) => ({
@@ -33,6 +32,7 @@ describe('AppController (e2e)', () => {
           }),
           inject: [ConfigService],
         }),
+        AppModule,
       ],
     }).compile();
 
