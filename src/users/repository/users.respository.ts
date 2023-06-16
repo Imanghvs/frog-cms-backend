@@ -1,4 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException, HttpStatus, Injectable, Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument, UserEntity } from '../schemas/users.schema';
@@ -15,6 +17,12 @@ export class UsersRepository implements IUsersRepository {
   ) {}
 
   async save(data: CreateUserDTO): Promise<UserEntity> {
-    return new this.UserModel(data).save();
+    try {
+      const newUser = await new this.UserModel(data).save();
+      return newUser;
+    } catch (error) {
+      if (error.code === 11000) throw new HttpException('username already exists', HttpStatus.CONFLICT);
+      throw error;
+    }
   }
 }

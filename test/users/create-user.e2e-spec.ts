@@ -177,5 +177,22 @@ describe('AppController (e2e)', () => {
           __v: 0,
         });
       }));
+    it('should result in error for duplicate usernames', async () => {
+      await request(app.getHttpServer())
+        .post('/users/')
+        .set('Accept', 'application/json')
+        .send(createUserDTOStub);
+      return request(app.getHttpServer())
+        .post('/users/')
+        .set('Accept', 'application/json')
+        .send(createUserDTOStub)
+        .then((result) => {
+          expect(result.statusCode).toBe(409);
+          expect(result.body).toStrictEqual({
+            message: 'username already exists',
+            statusCode: 409,
+          });
+        });
+    });
   });
 });

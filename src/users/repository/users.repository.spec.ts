@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { MongoError } from 'mongodb';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { createUserDTOStub } from '../stubs/create-user-dto.stub';
 import { UsersRepository } from './users.respository';
 import { UserDocument, UserEntity } from '../schemas/users.schema';
@@ -34,6 +36,19 @@ describe('UsersRepository', () => {
       expect(saveSpy).toHaveBeenCalled();
       expect(constructorSpy).toHaveBeenCalledWith(createUserDTOStub);
       expect(response).toStrictEqual(createUserDTOStub);
+    });
+
+    it('should throw meaningful error when a duplicate key error is raised from the db', async () => {
+      saveSpy = jest.spyOn(mockUserModel.prototype, 'save')
+        .mockImplementationOnce(() => {
+          const error = new MongoError('x');
+          error.code = 11000;
+          throw error;
+        });
+      constructorSpy = jest.spyOn(mockUserModel.prototype, 'constructorSpy');
+      await expect(() => usersRepository.save(createUserDTOStub)).rejects.toThrow(
+        new HttpException('username already exists', HttpStatus.CONFLICT),
+      );
     });
   });
 });
