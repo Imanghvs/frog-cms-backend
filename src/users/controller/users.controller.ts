@@ -1,5 +1,5 @@
 import {
-  Controller, Post, Inject, Body,
+  Controller, Post, Inject, Body, ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IUsersService } from '../service/users.service.interface';
@@ -13,7 +13,7 @@ export class UsersController {
   ) {}
 
   @Post()
-  create(@Body() body: CreateUserDTO): object {
+  create(@Body(ValidationPipe) body: CreateUserDTO): object {
     return this.service.create(body);
   }
 }

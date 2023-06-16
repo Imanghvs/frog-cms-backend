@@ -49,18 +49,133 @@ describe('AppController (e2e)', () => {
     await userModel.deleteMany({});
   });
 
-  it('/ (POST)', () => request(app.getHttpServer())
-    .post('/users/')
-    .set('Accept', 'application/json')
-    .send(createUserDTOStub)
-    .then((result) => {
-      expect(result.statusCode).toBe(201);
-      expect(result.body).toStrictEqual({
-        ...createUserDTOStub,
-        _id: expect.anything(),
-        createdAt: expect.anything(),
-        updatedAt: expect.anything(),
-        __v: 0,
-      });
-    }));
+  describe('/users (POST)', () => {
+    it('should end up in error when username is not acceptable', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, username: 'Iman' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'username must be a lowercase string',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password is too short', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'Qw@1' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+            'minLength-{"ln":6,"count":6}',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password is too long', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'Qwer@1234Qwer@1234Qwe' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+            'maxLength-{"ln":20,"count":20}',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password does not contain digits', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'Qwer@Qwer' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password does not contain capital letters', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'qwer@1234' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password does not contain lowercase letters', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'QWER@1234' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should end up in error when password does not contain special characters', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send({ ...createUserDTOStub, password: 'Qwer1234' })
+      .then((result) => {
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toStrictEqual({
+          error: 'Bad Request',
+          message: [
+            'password should contain at least one lowercase letter, '
+            + 'one uppercase letter,one numeric digit, and one special character',
+          ],
+          statusCode: 400,
+
+        });
+      }));
+    it('should make a user successfully', () => request(app.getHttpServer())
+      .post('/users/')
+      .set('Accept', 'application/json')
+      .send(createUserDTOStub)
+      .then((result) => {
+        expect(result.statusCode).toBe(201);
+        expect(result.body).toStrictEqual({
+          ...createUserDTOStub,
+          _id: expect.anything(),
+          createdAt: expect.anything(),
+          updatedAt: expect.anything(),
+          __v: 0,
+        });
+      }));
+  });
 });
