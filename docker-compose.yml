@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  frog-cms-mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+          cpus: 300m
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    networks:
+      - frog-cms
+    volumes:
+      - frog-cms-mongodb:/data
+  frog-cms-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_HOSTNAME: frog-cms-backend-frog-cms-mongodb-1
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: 1234
+      MONGODB_DATABASE: db-cms
+    networks:
+      - frog-cms
+    depends_on:
+      - frog-cms-mongodb
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+          cpus: 100m
+
+networks:
+  frog-cms:
+    driver: bridge
+volumes:
+  frog-cms-mongodb:
