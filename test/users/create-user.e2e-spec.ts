@@ -4,9 +4,9 @@ import * as request from 'supertest';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
-import { AppModule } from '../src/app.module';
-import { createUserDTOStub } from '../src/users/stubs/create-user-dto.stub';
-import { UserDocument, UserEntity } from '../src/users/schemas/users.schema';
+import { AppModule } from '../../src/app.module';
+import { createUserDTOStub } from '../../src/users/stubs/create-user-dto.stub';
+import { UserDocument, UserEntity } from '../../src/users/schemas/users.schema';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
