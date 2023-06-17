@@ -5,7 +5,13 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    UsersModule,
+    UsersModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        salt: configService.get('SALT', '$2a$10$W7gJK5i.AgJtuI/zIW1jh.'),
+      }),
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

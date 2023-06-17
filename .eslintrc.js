@@ -36,6 +36,6 @@ module.exports = {
       'selector': 'ForOfStatement[await=true]',
       'message': 'Todo: Required by EventStoreDB, Check for a better solution.'
     }],
-    'max-len': ['error', { 'code': 120, 'tabWidth': 2 }]
+    'max-len': ['error', { 'code': 120, 'tabWidth': 2 }],
   },
 };

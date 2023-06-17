@@ -172,6 +172,7 @@ describe('AppController (e2e)', () => {
         expect(result.body).toStrictEqual({
           ...createUserDTOStub,
           _id: expect.anything(),
+          password: '$2a$10$W7gJK5i.AgJtuI/zIW1jh.SJ92out48OVaOhhcq0yps7xLecSWTCi',
           createdAt: expect.anything(),
           updatedAt: expect.anything(),
           __v: 0,

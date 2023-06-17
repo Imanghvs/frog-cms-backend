@@ -30,6 +30,7 @@ services:
       MONGODB_USERNAME: admin
       MONGODB_PASSWORD: 1234
       MONGODB_DATABASE: db-cms
+      SALT: $2a$10$W7gJK5i.AgJtuI/zIW1jh.
     networks:
       - frog-cms
     depends_on:
