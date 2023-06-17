@@ -35,7 +35,9 @@ describe('UsersRepository', () => {
       const response = await usersRepository.save(createUserDTOStub);
       expect(saveSpy).toHaveBeenCalled();
       expect(constructorSpy).toHaveBeenCalledWith(createUserDTOStub);
-      expect(response).toStrictEqual(createUserDTOStub);
+      // eslint-disable-next-line new-cap
+      const modelResponse = await new mockUserModel(createUserDTOStub).save();
+      expect(response).toStrictEqual(modelResponse);
     });
 
     it('should throw meaningful error when a duplicate key error is raised from the db', async () => {

@@ -1,6 +1,6 @@
 import { CreateUserDTO } from '../dto/create-user.dto';
-import { UserEntity } from '../schemas/users.schema';
+import { UserDocument } from '../schemas/users.schema';
 
 export interface IUsersRepository {
-  save(data: CreateUserDTO): Promise<UserEntity>;
+  save(data: CreateUserDTO): Promise<UserDocument>;
 }

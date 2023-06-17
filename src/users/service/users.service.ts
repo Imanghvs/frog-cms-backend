@@ -15,9 +15,10 @@ export class UsersService implements IUsersService {
   ) {}
 
   async create(data: CreateUserDTO): Promise<any> {
-    return this.repository.save({
+    const createdUser = await this.repository.save({
       ...data,
       password: await this.bcryptWrapper.hash(data.password, this.config.salt),
     });
+    return { id: createdUser._id, username: createdUser.username };
   }
 }

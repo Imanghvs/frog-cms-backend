@@ -42,7 +42,10 @@ describe('UsersController', () => {
       };
       expect(repositorySaveSpy).toBeCalledWith(repositoryExpectedInput);
       const repositoryResponse = await usersRepository.save(repositoryExpectedInput);
-      expect(response).toStrictEqual(repositoryResponse);
+      expect(response).toStrictEqual({
+        id: repositoryResponse._id,
+        username: repositoryResponse.username,
+      });
     });
   });
 });

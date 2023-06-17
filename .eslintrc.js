@@ -37,5 +37,6 @@ module.exports = {
       'message': 'Todo: Required by EventStoreDB, Check for a better solution.'
     }],
     'max-len': ['error', { 'code': 120, 'tabWidth': 2 }],
+    'comma-dangle': [2, 'always-multiline']
   },
 };

@@ -16,7 +16,7 @@ export class UsersRepository implements IUsersRepository {
     @InjectModel(UserEntity.name) private UserModel: Model<UserDocument>,
   ) {}
 
-  async save(data: CreateUserDTO): Promise<UserEntity> {
+  async save(data: CreateUserDTO): Promise<UserDocument> {
     try {
       return await new this.UserModel(data).save();
     } catch (error) {

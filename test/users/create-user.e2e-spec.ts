@@ -170,12 +170,8 @@ describe('AppController (e2e)', () => {
       .then((result) => {
         expect(result.statusCode).toBe(201);
         expect(result.body).toStrictEqual({
-          ...createUserDTOStub,
-          _id: expect.anything(),
-          password: '$2a$10$W7gJK5i.AgJtuI/zIW1jh.SJ92out48OVaOhhcq0yps7xLecSWTCi',
-          createdAt: expect.anything(),
-          updatedAt: expect.anything(),
-          __v: 0,
+          username: createUserDTOStub.username,
+          id: expect.anything(),
         });
       }));
     it('should result in error for duplicate usernames', async () => {
