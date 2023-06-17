@@ -18,8 +18,7 @@ export class UsersRepository implements IUsersRepository {
 
   async save(data: CreateUserDTO): Promise<UserEntity> {
     try {
-      const newUser = await new this.UserModel(data).save();
-      return newUser;
+      return await new this.UserModel(data).save();
     } catch (error) {
       if (error.code === 11000) throw new HttpException('username already exists', HttpStatus.CONFLICT);
       throw error;
