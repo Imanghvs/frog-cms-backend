@@ -1,5 +1,6 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersController } from './controller/users.controller';
 import { UsersService } from './service/users.service';
 import { UserEntity, UserSchema } from './schemas/users.schema';
@@ -8,6 +9,7 @@ import { BcryptWrapper } from './service/bcrypt/bcrypt-wrapper';
 
 @Module({
   imports: [
+    ConfigModule,
     MongooseModule.forFeature([
       { name: UserEntity.name, schema: UserSchema },
     ]),
@@ -26,20 +28,14 @@ import { BcryptWrapper } from './service/bcrypt/bcrypt-wrapper';
       provide: 'IBcryptWrapper',
       useClass: BcryptWrapper,
     },
+    {
+      provide: 'IUsersConfig',
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        salt: configService.get('SALT', '$2a$10$W7gJK5i.AgJtuI/zIW1jh.'),
+      }),
+    },
   ],
+  exports: [{ provide: 'IUsersService', useClass: UsersService }],
 })
-export class UsersModule {
-  static registerAsync(options: any): DynamicModule {
-    return {
-      module: UsersModule,
-      imports: options.imports,
-      providers: [
-        {
-          provide: 'IUsersConfig',
-          useFactory: options.useFactory,
-          inject: options.inject || [],
-        },
-      ],
-    };
-  }
-}
+export class UsersModule {}

@@ -11,4 +11,8 @@ export class BcryptWrapper implements IBcryptWraper {
       });
     });
   }
+
+  compare(inputPassword: string, validHash: string): Promise<boolean> {
+    return bcrypt.compare(inputPassword, validHash);
+  }
 }

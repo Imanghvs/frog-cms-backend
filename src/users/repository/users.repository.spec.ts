@@ -53,4 +53,17 @@ describe('UsersRepository', () => {
       );
     });
   });
+
+  describe('getByUsername', () => {
+    let findOneSpy: jest.SpyInstance;
+
+    it('should get a user by username from MongoDB and return it', async () => {
+      findOneSpy = jest.spyOn(mockUserModel, 'findOne');
+      const { username } = createUserDTOStub;
+      const response = await usersRepository.getByUsername(username);
+      expect(findOneSpy).toHaveBeenCalledWith({ username });
+      const modelResponse = await mockUserModel.findOne({ username }).lean();
+      expect(response).toStrictEqual(modelResponse);
+    });
+  });
 });

@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockUsersService } from './mock.service.users';
 import { UsersService } from './users.service';
 import { createUserDTOStub } from '../stubs/create-user-dto.stub';
 import { MockUsersRepository } from '../repository/mock.users.repository';
 import { BcryptWrapper } from './bcrypt/bcrypt-wrapper';
 
 describe('UsersController', () => {
-  let usersService: MockUsersService;
+  let usersService: UsersService;
   let usersRepository: MockUsersRepository;
 
   beforeEach(async () => {
@@ -28,7 +27,7 @@ describe('UsersController', () => {
       ],
     }).compile();
 
-    usersService = module.get<MockUsersService>(UsersService);
+    usersService = module.get<UsersService>(UsersService);
     usersRepository = module.get<MockUsersRepository>('IUsersRepository');
   });
 
@@ -46,6 +45,15 @@ describe('UsersController', () => {
         id: repositoryResponse._id,
         username: repositoryResponse.username,
       });
+    });
+  });
+
+  describe('getUserByUsername', () => {
+    it('should return complete getByUsername repository response', async () => {
+      const repositoryGetByUsernameSpy = jest.spyOn(usersRepository, 'getByUsername');
+      const response = await usersService.getUserByUsername('sample-username');
+      expect(repositoryGetByUsernameSpy).toBeCalledWith('sample-username');
+      expect(response).toStrictEqual(await usersRepository.getByUsername('sample-username'));
     });
   });
 });

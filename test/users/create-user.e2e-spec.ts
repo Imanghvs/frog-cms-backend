@@ -8,7 +8,7 @@ import { AppModule } from '../../src/app.module';
 import { createUserDTOStub } from '../../src/users/stubs/create-user-dto.stub';
 import { UserDocument, UserEntity } from '../../src/users/schemas/users.schema';
 
-describe('AppController (e2e)', () => {
+describe('CREATE USER (e2e)', () => {
   let app: INestApplication;
   let userModel: Model<UserDocument>;
 
