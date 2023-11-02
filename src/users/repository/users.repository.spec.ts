@@ -52,6 +52,16 @@ describe('UsersRepository', () => {
         new HttpException('username already exists', HttpStatus.CONFLICT),
       );
     });
+
+    it('should throw other UserModel errors as they are', async () => {
+      saveSpy = jest.spyOn(mockUserModel.prototype, 'save')
+        .mockImplementationOnce(() => {
+          throw new Error('sample error');
+        });
+      await expect(() => usersRepository.save(createUserDTOStub)).rejects.toThrow(
+        new Error('sample error'),
+      );
+    });
   });
 
   describe('getByUsername', () => {
