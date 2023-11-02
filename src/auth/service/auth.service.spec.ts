@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { IUsersService } from '../../users/service/users.service.interface';
-import { BcryptWrapper } from '../../users/service/bcrypt/bcrypt-wrapper';
 import { AuthService } from './auth.service';
 import { loginDTOStub } from '../stubs/login-dto.stub';
 import { MockUsersService } from '../../users/service/mock.users.service';
@@ -16,10 +15,6 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        {
-          provide: 'IBcryptWrapper',
-          useClass: BcryptWrapper,
-        },
         {
           provide: 'IUsersService',
           useClass: MockUsersService,
