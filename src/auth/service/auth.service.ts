@@ -11,13 +11,13 @@ export class AuthService {
     @Inject('IUsersService') private readonly usersService: IUsersService,
   ) {}
 
-  async login(data: LoginDTO): Promise<any> {
+  async login(data: LoginDTO): Promise<{ accessToken: string }> {
     const user = await this.usersService.getUserByUsername(data.username);
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
       throw new UnauthorizedException(`incorrect username ${data.username} or password`);
     }
     return {
-      access_token: await this.jwtService.signAsync({
+      accessToken: await this.jwtService.signAsync({
         sub: user._id,
         username: user.username,
       }),

@@ -1,6 +1,7 @@
 import {
-  Body, Controller, Inject, Post, ValidationPipe,
+  Body, Controller, HttpStatus, Inject, Post, Res, ValidationPipe,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { LoginDTO } from '../dto';
 import { IAuthService } from '../service/auth.service.interface';
 
@@ -11,7 +12,11 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  login(@Body(ValidationPipe) data: LoginDTO) {
-    return this.authService.login(data);
+  async login(@Body(ValidationPipe) data: LoginDTO, @Res() response: Response): Promise<void> {
+    const { accessToken } = await this.authService.login(data);
+    response
+      .cookie('access-token', accessToken, { httpOnly: true })
+      .status(HttpStatus.NO_CONTENT)
+      .json({});
   }
 }

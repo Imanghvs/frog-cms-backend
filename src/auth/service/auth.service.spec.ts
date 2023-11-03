@@ -58,9 +58,9 @@ describe('AuthService', () => {
       const getUserByUsernameSpy = jest.spyOn(usersService, 'getUserByUsername');
       const response = await authService.login(loginDTOStub);
       expect(getUserByUsernameSpy).toBeCalledWith(loginDTOStub.username);
-      expect(response).toStrictEqual({ access_token: expect.anything() });
+      expect(response).toStrictEqual({ accessToken: expect.anything() });
       expect(JSON.parse(
-        Buffer.from(response.access_token.split('.')[1], 'base64').toString('utf-8'),
+        Buffer.from(response.accessToken.split('.')[1], 'base64').toString('utf-8'),
       )).toStrictEqual({
         exp: expect.anything(),
         iat: expect.anything(),
@@ -68,7 +68,7 @@ describe('AuthService', () => {
         username: loginDTOStub.username,
       });
       expect(JSON.parse(
-        Buffer.from(response.access_token.split('.')[0], 'base64').toString('utf-8'),
+        Buffer.from(response.accessToken.split('.')[0], 'base64').toString('utf-8'),
       )).toStrictEqual({
         alg: 'HS256',
         typ: 'JWT',

@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Response } from 'express';
+import { HttpStatus } from '@nestjs/common';
 import { createUserDTOStub } from '../../users/stubs/create-user-dto.stub';
 import { AuthController } from './auth.controller';
 import { IAuthService } from '../service/auth.service.interface';
@@ -38,10 +40,18 @@ describe('AuthController', () => {
         password: createUserDTOStub.password,
       };
       const serviceLoginSpy = jest.spyOn(authService, 'login');
-      const response = await authController.login(input);
+      const mockResponseObject: Response = {
+        json: jest.fn(),
+      } as unknown as Response;
+      mockResponseObject.status = jest.fn(() => mockResponseObject);
+      mockResponseObject.cookie = jest.fn(() => mockResponseObject);
+      const response = await authController.login(input, mockResponseObject);
       expect(serviceLoginSpy).toBeCalledWith(input);
       const serviceResponse = await authService.login(input);
-      expect(response).toStrictEqual(serviceResponse);
+      expect(response).toBe(undefined);
+      expect(mockResponseObject.cookie).toBeCalledWith('access-token', serviceResponse.accessToken, { httpOnly: true });
+      expect(mockResponseObject.status).toBeCalledWith(HttpStatus.NO_CONTENT);
+      expect(mockResponseObject.json).toBeCalledWith({});
     });
   });
 });

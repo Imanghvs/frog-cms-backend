@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import mongoose, { Model } from 'mongoose';
+import * as cookie from 'cookie';
 import { AppModule } from '../../src/app.module';
 import { createUserDTOStub } from '../../src/users/stubs/create-user-dto.stub';
 import { UserDocument, UserEntity } from '../../src/users/schemas/users.schema';
@@ -95,10 +96,16 @@ describe('LOGIN (e2e)', () => {
       .set('Accept', 'application/json')
       .send({ username: createUserDTOStub.username, password: createUserDTOStub.password })
       .then((result) => {
-        expect(result.statusCode).toBe(201);
-        expect(result.body).toStrictEqual({ access_token: expect.anything() });
+        expect(result.statusCode).toBe(204);
+        expect(result.body).toStrictEqual({});
+        const parsedCookie = cookie.parse(result.get('Set-Cookie')[0]);
+        expect(parsedCookie).toStrictEqual({
+          Path: '/',
+          'access-token': expect.anything(),
+        });
+        const accessToken = parsedCookie['access-token'];
         expect(JSON.parse(
-          Buffer.from(result.body.access_token.split('.')[1], 'base64').toString('utf-8'),
+          Buffer.from(accessToken.split('.')[1], 'base64').toString('utf-8'),
         )).toStrictEqual({
           exp: expect.anything(),
           iat: expect.anything(),
@@ -106,7 +113,7 @@ describe('LOGIN (e2e)', () => {
           sub: expect.anything(),
         });
         expect(JSON.parse(
-          Buffer.from(result.body.access_token.split('.')[0], 'base64').toString('utf-8'),
+          Buffer.from(accessToken.split('.')[0], 'base64').toString('utf-8'),
         )).toStrictEqual({
           alg: 'HS256',
           typ: 'JWT',

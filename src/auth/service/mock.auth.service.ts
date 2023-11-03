@@ -2,7 +2,7 @@
 import { IAuthService } from './auth.service.interface';
 
 export class MockAuthService implements IAuthService {
-  login(): Promise<any> {
-    return Promise.resolve({});
+  login(): Promise<{ accessToken: string }> {
+    return Promise.resolve({ accessToken: 'sample-token' });
   }
 }
